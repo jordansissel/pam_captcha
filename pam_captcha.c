@@ -1,7 +1,7 @@
 /* pam_captcha - A Visual text-based CAPTCHA challenge module for PAM
  * Jordan Sissel <jls@semicomplete.com> 
  * 
- * Version 1.2 (March 2006)
+ * Version 1.3 (March 2007)
  *
  * Released under the BSD license. 
  *
@@ -28,10 +28,15 @@
  *   - Place this entry in your pam config for whatever service you want. It
  *     needs to go at the top of your pam auth stack (first entry?):
  *
- *     auth            requisite       pam_captcha.so
+ *     auth       requisite     pam_captcha.so    [options]
+ *
+ * Available options: math, dda, randomstring
+ * Example:
+ *   - Enable 'math' and 'randomstring' captchas:
+ *     auth       requisite     pam_captcha.so    math randomstring
  *
  * 'requisite' is absolutely necessary here. This keyword means that if a user
- * fails pam_captcha, the whole auth chain is marked as failure. This ensure
+ * fails pam_captcha, the whole auth chain is marked as failure.  This ensure
  * that users must pass the captcha challenge before being permitted to attempt
  * any other kind of pam authentication, such as a standard login. 'required'
  * can work here too but will not break the chain. I like requisite because you
