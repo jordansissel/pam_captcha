@@ -108,8 +108,7 @@ static const struct captcha_entry {
 };
 
 static void init_captcha_list(pam_handle_t *pamh, captcha_func_t **captcha_list, 
-                              int *num_captchas) {
-  char *optlist[] = { "math", "dda", "randomstring", NULL };
+                              int *num_captchas, const int argc, const char **argv) {
   const char *opt;
   int len = 10;
   int x, y;
@@ -121,14 +120,15 @@ static void init_captcha_list(pam_handle_t *pamh, captcha_func_t **captcha_list,
   *captcha_list = malloc(len * sizeof(captcha_func_t));
   memset(*captcha_list, 0, len * sizeof(captcha_func_t));
 
-  for (y = 0; opt = optlist[y], optlist[y] != NULL; y++) {
-    if (openpam_get_option(pamh, optlist[y]) == NULL)
-      continue;
+  for (y = 0; y < argc; y++) {
+    //if (openpam_get_option(pamh, optlist[y]) == NULL)
+      //continue;
+    opt = argv[y];
 
     for (x = 0; all_captchas[x].name != NULL; x++) {
-      //syslog(LOG_INFO, "%s vs %s", opt, all_captchas[x].name);
+      syslog(LOG_INFO, "%s vs %s", opt, all_captchas[x].name);
       if (!strcmp(opt, all_captchas[x].name)) {
-        //syslog(LOG_INFO, "Matched opt %s", opt);
+        syslog(LOG_INFO, "Matched opt %s", opt);
         (*captcha_list)[(*num_captchas)++] = all_captchas[x].func;
       }
     }
@@ -159,7 +159,7 @@ static void figlet(pam_handle_t *pamh, char *fmt, ...) {
   buffer = calloc(BUFFERSIZE, 1);
   srand(time(NULL));
 
-  sprintf(buffer, "/usr/local/bin/figlet -f %s -- '%s'", font, key);
+  sprintf(buffer, "figlet -f %s -- '%s'", font, key);
   fp = popen(buffer, "r");
   i = 0;
   while (!feof(fp)) {
@@ -417,7 +417,7 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags,
 
   openlog("pam_captcha", 0, LOG_AUTHPRIV);
 
-  init_captcha_list(pamh, &captchas, &num_captchas);
+  init_captcha_list(pamh, &captchas, &num_captchas, argc, argv);
 
   r = rand() % num_captchas;
   ret = captchas[r](pamh, flags, argc, argv);
