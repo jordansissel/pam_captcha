@@ -159,7 +159,7 @@ static void figlet(pam_handle_t *pamh, char *fmt, ...) {
   buffer = calloc(BUFFERSIZE, 1);
   srand(time(NULL));
 
-  sprintf(buffer, "figlet -f %s -- '%s'", font, key);
+  sprintf(buffer, "env PATH=$PATH:/usr/local/bin figlet -f %s -- '%s'", font, key);
   fp = popen(buffer, "r");
   i = 0;
   while (!feof(fp)) {
