@@ -11,20 +11,20 @@
  *
  * Requirements:
  *   - Figlet
- *   - OpenPAM (Linux and FreeBSD should have this)
+ *   - OpenPAM or Linux-PAM (Linux and FreeBSD known to work)
  *
  * Notes: 
- *    Figlet needs to be in /usr/local/bin, because I'm lazy.  You can fix this
- *    if you want, just look for /usr/local/bin further down and you can change
- *    the paths used.
- *
  *    - I have tested this in FreeBSD and Linux. It works there.
  *    - It will not build under Solaris 9, and I have no intentions of
  *      fixing that at this time
  *
  * Installation Instructions
  *   - Just type 'make' (assuming you downloaded the Makefile too)
- *   - Copy pam_captcha.so to your pam module dir (/usr/lib on FreeBSD)
+ *   - Copy pam_captcha.so to your pam module dir.
+ *       FreeBSD: /usr/lib
+ *       Ubuntu: /lib/security
+ *       Others: Find other files named 'pam_*.so'
+ *
  *   - Place this entry in your pam config for whatever service you want. It
  *     needs to go at the top of your pam auth stack (first entry?):
  *
